@@ -7,6 +7,8 @@ import sqlite3
 conn = sqlite3.connect(os.path.join("db", "students.db"))
 cursor = conn.cursor()
 
+#cursor.execute(f"SELECT * FROM student")
+#print(cursor.fetchall())
 
 def insert(table: str, column_values: Dict):
     columns = ', '.join( column_values.keys() )
@@ -45,7 +47,7 @@ def get_cursor():
 
 def _init_db():
     """Инициализирует БД"""
-    with open("createdb.sql", "r") as f:
+    with open("createdb.sql", "r", encoding="utf8") as f:
         sql = f.read()
     cursor.executescript(sql)
     conn.commit()
@@ -59,3 +61,6 @@ def check_db_exists():
     if table_exists:
         return
     _init_db()
+
+
+check_db_exists()

@@ -24,4 +24,13 @@ docker exec -ti tg_bot_cont bash
 sqlite3 /home/db/students.db
 ```
 
+Удобство отображения в sqlite
+```
+.mode column
+.headers on
+```
 
+join
+```
+select st.*,th.theme_name from student st left join themes th on th.themes_grade_number=st.grade_number;
+```

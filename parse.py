@@ -16,18 +16,19 @@ def get_html(url):
 
 
 def get_content(html):
-    """"""
+    """логика парсинга"""
     soup = BeautifulSoup(html, 'html.parser')
     main_container = soup.find(class_="tests-list")
 
     for items in main_container:
-        header_grade = items.findNext(class_="tests_head").text
-        theme_name = items.findNext(class_="list-item").find("a").text
-
         try:
+            header_grade = items.findNext(class_="tests_head").text
+            theme_name = items.findNext(class_="list-item").find("a").text
+
             match = re.match(r"([5-9] класс).*", header_grade)
         except:
             pass
+
         if match:
             print(match.group(1))
             print(theme_name)
