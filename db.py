@@ -3,17 +3,17 @@ from typing import Dict, List, Tuple
 
 import sqlite3
 
-
 conn = sqlite3.connect(os.path.join("db", "students.db"))
 cursor = conn.cursor()
 
-#cursor.execute(f"SELECT * FROM student")
-#print(cursor.fetchall())
+# cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='student'")
+# print(cursor.fetchall())
+
 
 def insert(table: str, column_values: Dict):
-    columns = ', '.join( column_values.keys() )
+    columns = ', '.join(column_values.keys())
     values = [tuple(column_values.values())]
-    placeholders = ", ".join( "?" * len(column_values.keys()) )
+    placeholders = ", ".join("?" * len(column_values.keys()))
     cursor.executemany(
         f"INSERT INTO {table} "
         f"({columns}) "
@@ -22,17 +22,20 @@ def insert(table: str, column_values: Dict):
     conn.commit()
 
 
-def fetchall(table: str, columns: List[str]) -> List[Tuple]:
+def fetchall(table: str, columns: List[str], wanna_return: tuple or dict, join_on="") -> List[Tuple or Dict]:
     columns_joined = ", ".join(columns)
-    cursor.execute(f"SELECT {columns_joined} FROM {table}")
+    cursor.execute(f"SELECT {columns_joined} FROM {table} {join_on}")
     rows = cursor.fetchall()
     result = []
-    for row in rows:
-        dict_row = {}
-        for index, column in enumerate(columns):
-            dict_row[column] = row[index]
-        result.append(dict_row)
-    return result
+    if wanna_return == dict:
+        for row in rows:
+            dict_row = {}
+            for index, column in enumerate(columns):
+                dict_row[column] = row[index]
+            result.append(dict_row)
+        return result
+    elif wanna_return == tuple:
+        return rows
 
 
 def delete(table: str, row_id: int) -> None:
@@ -47,7 +50,7 @@ def get_cursor():
 
 def _init_db():
     """Инициализирует БД"""
-    with open("createdb.sql", "r", encoding="utf8") as f:
+    with open("./createdb.sql", "r", encoding="utf8") as f:
         sql = f.read()
     cursor.executescript(sql)
     conn.commit()

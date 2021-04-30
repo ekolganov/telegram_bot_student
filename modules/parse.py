@@ -19,6 +19,7 @@ def get_content(html):
     """логика парсинга"""
     soup = BeautifulSoup(html, 'html.parser')
     main_container = soup.find(class_="tests-list")
+    tmp_list = []
 
     for items in main_container:
         try:
@@ -30,8 +31,9 @@ def get_content(html):
             pass
 
         if match:
-            print(match.group(1))
-            print(theme_name)
+            grade = match.group(1)
+            tmp_list += [(grade, theme_name)]
+    print(tmp_list)
 
 
 def parse():
