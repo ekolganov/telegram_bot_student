@@ -81,9 +81,8 @@ def _parse_message_add_student(raw_message: str) -> Student:
             or not regexp_result.group(1) or not regexp_result.group(3):
         raise exceptions.NotCorrectMessage(
             "Не могу понять сообщение. Напишите текст в формате\n"
-            "➡Вася Пупкин 6 класс\n"
-            "можно с ФИО и примечанием\n"
-            "➡Вася Пупкин Дмитриевич 6 класс оболутс оболтусом")
+            "➡Вася Пупкин 6 класс\n\n"
+            "или нажмите /cancel")
 
     fullname = regexp_result.group(1)
     grade = regexp_result.group(3)

@@ -2,13 +2,14 @@
 import logging
 import asyncio
 
-from handlers import students, themes
+from handlers import students, themes, dictations
 from middlewares import AccessMiddleware
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
+from aiogram.utils.markdown import bold
 
 API_TOKEN = "1736892712:AAHDtOBkXm8t8xjgRnCMb8qfT3ZZuAG4QzY"
 ACCESS_ID = [344928892]
@@ -43,17 +44,26 @@ async def main():
     async def send_welcome(message: types.Message):
         """Отправляет приветственное сообщение и помощь по боту"""
 
-        await message.answer(
-            "Бот помощник в изучении русского языка\n\n"
-            "Список учеников: /students_list\n"
-            "Список тем: /themes_list\n"
-            "Список учеников и тем для их класса: /student_themes_list\n"
-            "Добавить студента: /add_student\n"
-            "Темы для изучения 5-9 классы: /themes_middle_school\n"
-        )
+        list_commands = [
+            "Действия с учениками\n",
+            "Список учеников: /students_list",
+            "Добавить ученика: /add_student",
+            "Список учеников и тем для их класса: /student_themes_list",
+            "\nДействия с темами\n",
+            "Список тем: /themes_list",
+            "Добавить тему: /add_theme",
+            "Добавить диктант: /add_dictation",
+            "Просмотреть все диктанты: /dictations",
+            # "Темы для изучения 5-9 классы: /themes_middle_school",
+        ]
+
+        answer_message = "💬Бот помощник в изучении русского языка:\n\n" + "\n".join(list_commands)
+
+        await message.answer(answer_message)
 
     students.register_handlers_students(dp)
     themes.register_handlers_themes(dp)
+    dictations.register_handlers_dictations(dp)
 
     await dp.skip_updates()
     await dp.start_polling()

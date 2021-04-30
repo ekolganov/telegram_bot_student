@@ -38,7 +38,7 @@ async def list_of_students_and_themes(message: types.Message):
         themes = [f"▪ {th}" for th in st_th.theme_name]
 
         st_th_row += [f"➡ {name}\n"
-                      f"{themes_module.unpack_list_themes(themes)}"]
+                      f"{themes_module.unpack_list(themes)}"]
 
     answer_message = "💬Список учеников и тем для его класса:\n\n" + "\n\n".join(st_th_row)
 
@@ -47,7 +47,6 @@ async def list_of_students_and_themes(message: types.Message):
 
 async def del_student(message: types.Message):
     """Удаляет одну запись студента по её идентификатору"""
-    """/del_student*, где цифры вместо * обозначают как 12:"""
 
     row_id = int(message.text[12:])
     students_module.delete_student(row_id)
@@ -56,9 +55,9 @@ async def del_student(message: types.Message):
     await message.answer(answer_message)
 
 
-async def add_student1(message: types.Message):
+async def add_student1(message: types.Message, state: FSMContext):
     """Приглашение к вводу нового студента"""
-
+    await state.finish()
     await message.answer(
         "💡Чтобы добавить нового ученика введите его в формате\n"
         "➡Вася Пупкин 6 класс\n"

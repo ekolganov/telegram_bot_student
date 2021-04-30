@@ -22,9 +22,9 @@ def insert(table: str, column_values: Dict):
     conn.commit()
 
 
-def fetchall(table: str, columns: List[str], wanna_return: tuple or dict, join_on="") -> List[Tuple or Dict]:
+def fetchall(table: str, columns: List[str], wanna_return: tuple or dict, join_on="", where="") -> List[Tuple or Dict]:
     columns_joined = ", ".join(columns)
-    cursor.execute(f"SELECT {columns_joined} FROM {table} {join_on}")
+    cursor.execute(f"SELECT {columns_joined} FROM {table} {where} {join_on}")
     rows = cursor.fetchall()
     result = []
     if wanna_return == dict:
@@ -36,6 +36,21 @@ def fetchall(table: str, columns: List[str], wanna_return: tuple or dict, join_o
         return result
     elif wanna_return == tuple:
         return rows
+
+
+def fetchone(table: str, columns: List[str], where="") -> Tuple:
+    columns_joined = ", ".join(columns)
+    cursor.execute(f"SELECT {columns_joined} FROM {table} {where}")
+    row = cursor.fetchone()
+    return row
+
+
+def updateone(table: str, set_row: str, where):
+    cursor.execute(f"UPDATE {table} SET {set_row} {where}")
+    conn.commit()
+    cursor.execute(f"SELECT * FROM {table} {where}")
+    row = cursor.fetchone()
+    return row
 
 
 def delete(table: str, row_id: int) -> None:
@@ -50,7 +65,7 @@ def get_cursor():
 
 def _init_db():
     """Инициализирует БД"""
-    with open("./createdb.sql", "r", encoding="utf8") as f:
+    with open("createdb.sql", "r", encoding="utf8") as f:
         sql = f.read()
     cursor.executescript(sql)
     conn.commit()
