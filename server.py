@@ -9,10 +9,11 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from aiogram.utils.markdown import bold
+from aiogram.types import ReplyKeyboardRemove, \
+    ReplyKeyboardMarkup, KeyboardButton
 
 API_TOKEN = "1736892712:AAHDtOBkXm8t8xjgRnCMb8qfT3ZZuAG4QzY"
-ACCESS_ID = [344928892]
+ACCESS_ID = [344928892, 1596273768]
 
 # API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
 # ACCESS_ID = os.getenv("TELEGRAM_ACCESS_ID")
@@ -50,16 +51,20 @@ async def main():
             "Добавить ученика: /add_student",
             "Список учеников и тем для их класса: /student_themes_list",
             "\nДействия с темами\n",
-            "Список тем: /themes_list",
-            "Добавить тему: /add_theme",
-            "Добавить диктант: /add_dictation",
+            "Список тем и диктантов к ним: /themes_list",
+            "Добавить тему: /add_theme\n",
             "Просмотреть все диктанты: /dictations",
+            "Добавить диктант: /add_dictation",
             # "Темы для изучения 5-9 классы: /themes_middle_school",
         ]
 
         answer_message = "💬Бот помощник в изучении русского языка:\n\n" + "\n".join(list_commands)
-
         await message.answer(answer_message)
+
+        button_help = KeyboardButton('/help')
+        button_cancel = KeyboardButton('/cancel')
+        kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).row(button_help, button_cancel)
+        await message.reply(message.text, reply_markup=kb)
 
     students.register_handlers_students(dp)
     themes.register_handlers_themes(dp)

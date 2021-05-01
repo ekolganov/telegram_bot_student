@@ -1,18 +1,25 @@
-create table student(
-    id integer primary key,
-    full_name varchar(255),
-    grade_number varchar(255),
-    description text,
+create table students(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    full_name VARCHAR(255),
+    grade_number VARCHAR(255),
+    description TEXT
 );
 
 create table themes(
-    id integer primary key,
-    themes_grade_number varchar(255),
-    theme_name text
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    themes_grade_number VARCHAR(255),
+    theme_name TEXT
 );
 
 
-insert into student(full_name, grade_number, description) values
+create table dictations(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    themes_id INTEGER,
+    dictation TEXT
+);
+
+
+insert into students(full_name, grade_number, description) values
     ('Петров Евгений', '6 класс', 'не очень прилежный'),
     ('Вася Пупкин Сергеевич', '8 класс', 'оболтус'),
     ('Егор Петров', '9 класс', 'серьёзный'),
@@ -26,3 +33,10 @@ insert into themes(themes_grade_number, theme_name) values
     ('7 класс', 'Наречие. Суффиксы О и А на конце наречий'),
     ('7 класс', 'Причастие. Гласные в суффиксах причастий'),
     ('8 класс', 'Деепричастия');
+
+
+insert into dictations(themes_id, dictation) values
+    (1, 'Вечером быстро темнеет. Темнота из серого тона переходит в тёмный. Постепенно она застилает всё небо. Всё вокруг утопает в ночной темноте. И вот на небесный свод выплывает яркая большая луна.'),
+    (3, 'Летом внуки гостили у бабушки в деревне. Катя полола грядки с морковью, огурцами. Коля кормил травой козу Зинку. Старший Вася ходил на сенокос. Он заготовил сено для коровы Зорьки.'),
+    (5, 'Настало лето. Дети едут на дачу. Возле дачи есть роща и пруд. В пруду водятся щуки, ерши и караси. Дети там рыбачат. Хороша будет уха.'),
+    (5, 'Как красив лес осенью! Кругом деревья в золотом уборе. Хороши высокие березы и осины. Под кустом прячется зайка. У дупла сидит белка. На макушку ели села птица .');

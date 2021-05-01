@@ -18,13 +18,9 @@ class Themes(NamedTuple):
     theme_names_ids: List[tuple]
 
 
-def unpack_list(lst):
-    return "\n".join(map(str, lst))
-
-
 def get_themes() -> list[Themes]:
     rows = db.fetchall("themes th", ["th.id", "th.themes_grade_number", "th.theme_name"],
-                       wanna_return=tuple)
+                       wanna_return=tuple, order="ORDER BY themes_grade_number, th.theme_name")
 
     result_dict = {}
     for th_id, grade, th_name in rows:
@@ -60,7 +56,7 @@ def add_theme(theme_grade: str, theme_name: str) -> Theme:
 def add_theme_grade_check(raw_message: str) -> None:
     """Проверяет на соответствие название класса у темы"""
 
-    regexp_result = re.match(r"(\d{1,2} класс)", raw_message)
+    regexp_result = re.search(r"^(\d{1,2} класс)$", raw_message)
 
     if not regexp_result or not regexp_result.group(0) \
             or not regexp_result.group(1):
@@ -89,7 +85,7 @@ def get_theme(theme_id: int) -> Theme:
 
 
 def rename_theme(theme_id: int, new_theme_name: str) -> Theme:
-    updated_theme_row = db.updateone("themes", f"theme_name='{new_theme_name}'",
+    updated_theme_row = db.updateone("themes", set_row=f"theme_name='{new_theme_name}'",
                                      where=f"where id={theme_id}")
     return Theme(id=updated_theme_row[0],
                  themes_grade_number=updated_theme_row[1],

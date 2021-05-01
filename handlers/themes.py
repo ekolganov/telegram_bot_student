@@ -1,8 +1,8 @@
-from modules import themes_module
-from handlers import dictations
+import modules.shared_module
+from modules import themes_module, shared_module
 import exceptions
 
-from aiogram import Dispatcher, types, filters
+from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
@@ -22,13 +22,13 @@ async def list_of_themes(message: types.Message):
     th_row = []
     for th in list_themes:
         grade = th.themes_grade_number
-        themes = [f"▪ {th_name}\n"
+        themes = [f"📒 {th_name}\n"
                   f"✏/rename_theme{th_id}   ❌/del_theme{th_id}\n"
-                  f"📓/dictations{th_id}   📓/add_dictation{th_id}\n"
+                  f"диктанты: 📓/dictations{th_id}   добавить диктант: 📓/add_dictation{th_id}\n"
                   for th_name, th_id in th.theme_names_ids]
 
         th_row += [f"➡ {grade}\n\n"
-                   f"{themes_module.unpack_list(themes)}"]
+                   f"{modules.shared_module.unpack_list(themes)}"]
 
     answer_message = "💬Список тем:\n\n" + "\n\n".join(th_row)
     await message.answer(answer_message)
@@ -36,8 +36,8 @@ async def list_of_themes(message: types.Message):
 
 async def del_theme(message: types.Message):
     """Удаляет одну запись темы по её идентификатору"""
+    row_id = shared_module.get_id_command(message.text)
 
-    row_id = int(message.text[10:])
     themes_module.delete_theme(row_id)
 
     answer_message = "Удалил"
@@ -87,8 +87,8 @@ async def add_theme3(message: types.Message, state: FSMContext):
         return
 
     answer_message = (
-        f"💬Добавлена тема для {theme.themes_grade_number}а\n\n"
-        f"{theme.theme_name}"
+        f"✅Добавлена тема для {theme.themes_grade_number}а\n\n"
+        f"📒 {theme.theme_name}"
     )
 
     await state.finish()
@@ -97,14 +97,14 @@ async def add_theme3(message: types.Message, state: FSMContext):
 
 async def rename_theme1(message: types.Message, state: FSMContext):
     """ Переименование темы, вывод текущей и приглос на ввод новой """
+    theme_id = shared_module.get_id_command(message.text)
 
-    theme_id = int(message.text[13:])
     await state.update_data(theme_id=theme_id)
 
     theme_old = themes_module.get_theme(theme_id)
 
     answer_message = (f"Текущее название:\n\n"
-                      f"➡{theme_old.theme_name}\n\n"
+                      f"📒 {theme_old.theme_name}\n\n"
                       f"Введите новое название темы")
     await message.answer(answer_message)
     await Form.wait_theme_renamed_text.set()
@@ -117,9 +117,9 @@ async def rename_theme2(message: types.Message, state: FSMContext):
 
     new_theme_name = themes_module.rename_theme(st["theme_id"], st["new_theme_name"])
 
-    answer_message = (f"Отлично!\n"
+    answer_message = (f"✅Отлично!\n"
                       f"Новое название:\n\n"
-                      f"➡{new_theme_name.theme_name}")
+                      f"📒 {new_theme_name.theme_name}")
 
     await state.finish()
     await message.answer(answer_message)

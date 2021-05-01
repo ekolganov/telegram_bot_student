@@ -23,8 +23,8 @@ class StudentThemes(NamedTuple):
 def get_students() -> list[Student]:
     """ Вывести список студентов """
 
-    rows = db.fetchall("student st", ["st.id", "st.full_name", "st.grade_number", "st.description"],
-                       wanna_return=dict)
+    rows = db.fetchall("students st", ["st.id", "st.full_name", "st.grade_number", "st.description"],
+                       wanna_return=dict, order="ORDER BY st.full_name")
 
     students = [Student(id=row["st.id"],
                         fullname=row["st.full_name"],
@@ -35,9 +35,10 @@ def get_students() -> list[Student]:
 
 def get_student_themes() -> list[StudentThemes]:
     """ Вывести студентов и их темы, в соответствии с калссом """
-    rows = db.fetchall("student st", ["st.id", "st.full_name", "th.theme_name"],
+    rows = db.fetchall("students st", ["st.id", "st.full_name", "th.theme_name"],
                        wanna_return=tuple, join_on=""
-                       "left join themes th on th.themes_grade_number=st.grade_number")
+                       "left join themes th on th.themes_grade_number=st.grade_number "
+                       "ORDER BY st.full_name, th.theme_name")
     result_dict = {}
     for st_id, name, theme in rows:
         if st_id in result_dict:
@@ -53,7 +54,7 @@ def get_student_themes() -> list[StudentThemes]:
 
 def delete_student(row_id: int) -> None:
     """Удаляет студента по его идентификатору"""
-    db.delete("student", row_id)
+    db.delete("students", row_id)
 
 
 def add_student(raw_message: str) -> Student:
@@ -61,7 +62,7 @@ def add_student(raw_message: str) -> Student:
 
     parsed_message = _parse_message_add_student(raw_message)
 
-    db.insert("student", {
+    db.insert("students", {
         "full_name": parsed_message.fullname,
         "grade_number": parsed_message.grade,
         "description": parsed_message.description,

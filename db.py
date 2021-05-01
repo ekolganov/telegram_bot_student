@@ -22,9 +22,9 @@ def insert(table: str, column_values: Dict):
     conn.commit()
 
 
-def fetchall(table: str, columns: List[str], wanna_return: tuple or dict, join_on="", where="") -> List[Tuple or Dict]:
+def fetchall(table: str, columns: List[str], wanna_return: tuple or dict, join_on="", where="", order="") -> List[Tuple or Dict]:
     columns_joined = ", ".join(columns)
-    cursor.execute(f"SELECT {columns_joined} FROM {table} {where} {join_on}")
+    cursor.execute(f"SELECT {columns_joined} FROM {table} {where} {join_on} {order}")
     rows = cursor.fetchall()
     result = []
     if wanna_return == dict:
@@ -45,7 +45,7 @@ def fetchone(table: str, columns: List[str], where="") -> Tuple:
     return row
 
 
-def updateone(table: str, set_row: str, where):
+def updateone(table: str, set_row: str, where: str) -> Tuple:
     cursor.execute(f"UPDATE {table} SET {set_row} {where}")
     conn.commit()
     cursor.execute(f"SELECT * FROM {table} {where}")
@@ -74,7 +74,7 @@ def _init_db():
 def check_db_exists():
     """Проверяет, инициализирована ли БД, если нет — инициализирует"""
     cursor.execute("SELECT name FROM sqlite_master "
-                   "WHERE type='table' AND name='student'")
+                   "WHERE type='table' AND name='students'")
     table_exists = cursor.fetchall()
     if table_exists:
         return
