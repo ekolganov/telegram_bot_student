@@ -1,3 +1,6 @@
+""" Этот файл не используется в проекте """
+
+
 from bs4 import BeautifulSoup
 import requests
 import re

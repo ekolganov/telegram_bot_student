@@ -12,6 +12,8 @@ class Form(StatesGroup):
 
 
 async def list_of_students(message: types.Message):
+    """ Выводит список учеников """
+
     list_students = students_module.get_students()
     if not list_students:
         await message.answer("Нет ни одного ученика")
@@ -27,6 +29,8 @@ async def list_of_students(message: types.Message):
 
 
 async def list_of_students_and_themes(message: types.Message):
+    """ Выводит список учеников и тем, в соответствии с их классом """
+
     list_students_and_themes = students_module.get_student_themes()
     if not list_students_and_themes:
         await message.answer("Нет ни одной темы или ученика")
@@ -46,7 +50,7 @@ async def list_of_students_and_themes(message: types.Message):
 
 
 async def del_student(message: types.Message):
-    """Удаляет одну запись студента по её идентификатору"""
+    """ Удаляет одну запись студента по её идентификатору """
 
     row_id = shared_module.get_id_command(message.text)
     students_module.delete_student(row_id)
@@ -56,7 +60,8 @@ async def del_student(message: types.Message):
 
 
 async def add_student1(message: types.Message, state: FSMContext):
-    """Приглашение к вводу нового студента"""
+    """ Приглашение к вводу нового студента """
+
     await state.finish()
     await message.answer(
         "💡Чтобы добавить нового ученика введите его в формате\n"
@@ -88,8 +93,11 @@ async def add_student2(message: types.Message, state: FSMContext):
 
 
 def register_handlers_students(dp: Dispatcher):
+    """ Регистрация message handler студентов для бота"""
+
     dp.register_message_handler(list_of_students, commands='students_list', state="*")
     dp.register_message_handler(list_of_students_and_themes, commands='student_themes_list', state="*")
     dp.register_message_handler(del_student, lambda message: message.text.startswith('/del_student'), state="*")
+
     dp.register_message_handler(add_student1, commands="add_student")
     dp.register_message_handler(add_student2, state=Form.wait_student)

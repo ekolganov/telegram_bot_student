@@ -7,6 +7,7 @@ import exceptions
 
 class Theme(NamedTuple):
     """Структура одной темы"""
+
     id: Optional[int]
     themes_grade_number: str
     theme_name: str
@@ -14,13 +15,17 @@ class Theme(NamedTuple):
 
 class Themes(NamedTuple):
     """Структура множества тем"""
+
     themes_grade_number: str
     theme_names_ids: List[tuple]
 
 
 def get_themes() -> list[Themes]:
-    rows = db.fetchall("themes th", ["th.id", "th.themes_grade_number", "th.theme_name"],
-                       wanna_return=tuple, order="ORDER BY themes_grade_number, th.theme_name")
+    """ Получает список тем """
+
+    rows = db.fetchall("themes", ["id", "themes_grade_number", "theme_name"],
+                       wanna_return=tuple, order="ORDER BY CAST(themes_grade_number AS UNSIGNED), themes_grade_number,"
+                                                 "theme_name")
 
     result_dict = {}
     for th_id, grade, th_name in rows:
@@ -35,12 +40,13 @@ def get_themes() -> list[Themes]:
 
 
 def delete_theme(row_id: int) -> None:
-    """Удаляет студента по его идентификатору"""
+    """ Удаляет студента по его идентификатору """
+
     db.delete("themes", row_id)
 
 
 def add_theme(theme_grade: str, theme_name: str) -> Theme:
-    """Добавляет новую тему"""
+    """ Добавляет новую тему """
 
     _add_theme_exist_check(theme_grade, theme_name)
 
@@ -54,7 +60,7 @@ def add_theme(theme_grade: str, theme_name: str) -> Theme:
 
 
 def add_theme_grade_check(raw_message: str) -> None:
-    """Проверяет на соответствие название класса у темы"""
+    """ Проверяет на соответствие название класса у темы """
 
     regexp_result = re.search(r"^(\d{1,2} класс)$", raw_message)
 
@@ -67,7 +73,7 @@ def add_theme_grade_check(raw_message: str) -> None:
 
 
 def _add_theme_exist_check(theme_grade: str, theme_name: str) -> None:
-    """Проверяет на существование названия темы для этого класса в БД"""
+    """ Проверяет на существование названия темы для определённого класса в БД """
 
     exist_themes = db.fetchall("themes", ["themes_grade_number", "theme_name"], wanna_return=tuple)
     exist_themes = set(exist_themes)
@@ -79,12 +85,16 @@ def _add_theme_exist_check(theme_grade: str, theme_name: str) -> None:
 
 
 def get_theme(theme_id: int) -> Theme:
-    row = db.fetchone("themes th", ["th.id", "th.themes_grade_number", "th.theme_name"],
-                      where=f"where th.id={theme_id}")
+    """ Получает тему """
+
+    row = db.fetchone("themes", ["id", "themes_grade_number", "theme_name"],
+                      where=f"where id={theme_id}")
     return Theme(id=row[0], themes_grade_number=row[1], theme_name=row[2])
 
 
 def rename_theme(theme_id: int, new_theme_name: str) -> Theme:
+    """ Переименовывает тему """
+
     updated_theme_row = db.updateone("themes", set_row=f"theme_name='{new_theme_name}'",
                                      where=f"where id={theme_id}")
     return Theme(id=updated_theme_row[0],

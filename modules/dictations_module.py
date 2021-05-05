@@ -5,23 +5,26 @@ from modules import themes_module
 import db
 
 import exceptions
+import logging
 
 
 class Dictation(NamedTuple):
-    """Структура одной темы"""
+    """ Структура одной темы """
+
     id: Optional[int]
     themes_id: Optional[int]
     dictation: str
 
 
 class Dictations(NamedTuple):
-    """Структура нескольких тем"""
+    """ Структура нескольких диктантов """
+
     theme_name: str
     dicts: List[tuple]
 
 
 def add_dictation(themes_id: int, dictation: str) -> Dictation:
-    """Добавляет новый диктант"""
+    """ Добавляет новый диктант """
 
     _add_dictation_exist_check(themes_id, dictation)
 
@@ -39,12 +42,12 @@ def get_dictations_theme(theme_id: int, show_all=0) -> list[Dictations]:
 
     row_dictation = None
     if show_all == 1:
-        row_dictation = db.fetchall("dictations d", ["d.id", "d.themes_id", "d.dictation"],
-                                    wanna_return=tuple, order="ORDER BY d.dictation")
+        row_dictation = db.fetchall("dictations ", ["id", "themes_id", "dictation"],
+                                    wanna_return=tuple, order="ORDER BY dictation")
     elif show_all == 0:
-        row_dictation = db.fetchall("dictations d", ["d.id", "d.themes_id", "d.dictation"],
+        row_dictation = db.fetchall("dictations ", ["id", "themes_id", "dictation"],
                                     wanna_return=tuple,
-                                    where=f"where d.themes_id={theme_id}", order="ORDER BY d.dictation")
+                                    where=f"where themes_id={theme_id}", order="ORDER BY dictation")
     result_dict = {}
     for d_id, th_id, dictation in row_dictation:
         th_name = themes_module.get_theme(th_id).theme_name
@@ -59,19 +62,20 @@ def get_dictations_theme(theme_id: int, show_all=0) -> list[Dictations]:
 
 
 def _add_dictation_exist_check(themes_id: int, dictation: str) -> None:
-    """Проверяет на существование названия диктанта для этой темы в БД"""
+    """ Проверяет на существование названия диктанта для этой темы """
 
     exist_dictation = db.fetchall("dictations", ["themes_id", "dictation"], wanna_return=tuple)
     exist_dictation = set(exist_dictation)
 
     if (themes_id, dictation) in exist_dictation:
+        logging.info(f'Trying to add exist dictation: {dictation} in theme: {themes_id}')
         raise exceptions.ExistingEntry(f"Ошибка!\n"
                                        f"Такой диктант для этой темы уже существует\n\n"
                                        f"Введите другой диктант, или нажмите /cancel")
 
 
-def get_dict_full(dict_id: int) -> Dictation:
-    """ Возвращает текст диктанта """
+def get_dict(dict_id: int) -> Dictation:
+    """ Получаем диктант """
 
     row = db.fetchone("dictations", ["themes_id", "dictation"],
                       where=f"where id={dict_id}")
@@ -85,7 +89,7 @@ def del_dict(dict_id: int) -> None:
 
 
 def rewrite_dict(dict_id: int, new_dictation: str) -> Dictation:
-    """ Переписываем диктант """
+    """ Обновляем запись диктанта и возвращает обновлённый диктант """
 
     updated_dictation_row = db.updateone("dictations", set_row=f"dictation='{new_dictation}'",
                                          where=f"where id={dict_id}")

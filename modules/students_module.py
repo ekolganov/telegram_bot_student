@@ -6,7 +6,8 @@ import db
 
 
 class Student(NamedTuple):
-    """Структура студента"""
+    """ Структура студента """
+
     id: Optional[int]
     fullname: str
     grade: str
@@ -14,7 +15,8 @@ class Student(NamedTuple):
 
 
 class StudentThemes(NamedTuple):
-    """ структура тем для учеников """
+    """ Структура тем для учеников """
+
     id: Optional[int]
     student_fullname: str
     theme_name: list[str]
@@ -23,22 +25,22 @@ class StudentThemes(NamedTuple):
 def get_students() -> list[Student]:
     """ Вывести список студентов """
 
-    rows = db.fetchall("students st", ["st.id", "st.full_name", "st.grade_number", "st.description"],
-                       wanna_return=dict, order="ORDER BY st.full_name")
+    rows = db.fetchall("students", ["id", "full_name", "grade_number", "description"],
+                       wanna_return=dict, order="ORDER BY full_name")
 
-    students = [Student(id=row["st.id"],
-                        fullname=row["st.full_name"],
-                        grade=row["st.grade_number"],
-                        description=row["st.description"]) for row in rows]
+    students = [Student(id=row["id"],
+                        fullname=row["full_name"],
+                        grade=row["grade_number"],
+                        description=row["description"]) for row in rows]
     return students
 
 
 def get_student_themes() -> list[StudentThemes]:
-    """ Вывести студентов и их темы, в соответствии с калссом """
+    """ Вывести студентов и их темы, в соответствии с классом """
     rows = db.fetchall("students st", ["st.id", "st.full_name", "th.theme_name"],
-                       wanna_return=tuple, join_on=""
-                       "left join themes th on th.themes_grade_number=st.grade_number "
-                       "ORDER BY st.full_name, th.theme_name")
+                       wanna_return=tuple,
+                       join_on="left join themes th on th.themes_grade_number=st.grade_number",
+                       order="ORDER BY st.full_name, th.theme_name")
     result_dict = {}
     for st_id, name, theme in rows:
         if st_id in result_dict:
@@ -53,12 +55,13 @@ def get_student_themes() -> list[StudentThemes]:
 
 
 def delete_student(row_id: int) -> None:
-    """Удаляет студента по его идентификатору"""
+    """ Удаляет студента по его идентификатору """
+
     db.delete("students", row_id)
 
 
 def add_student(raw_message: str) -> Student:
-    """Добавляет нового студента"""
+    """ Добавляет нового студента """
 
     parsed_message = _parse_message_add_student(raw_message)
 
@@ -74,7 +77,7 @@ def add_student(raw_message: str) -> Student:
 
 
 def _parse_message_add_student(raw_message: str) -> Student:
-    """Парсит текст пришедшего сообщения для добавления нового студента."""
+    """ Парсит текст пришедшего сообщения для добавления нового студента """
 
     regexp_result = re.match(r"(\w+ \w+( \w+)?) (\d{1,2} класс)\s?(.*)", raw_message)
 
