@@ -10,10 +10,9 @@ from middlewares import AccessMiddleware
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
-#API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
-#ACCESS_ID = os.getenv("TELEGRAM_ACCESS_ID")
-API_TOKEN = "1653214808:AAEBtQbr0xuXFcaingH94vjplu-8x_1qVQE"
-ACCESS_ID = [344928892,1596273768]
+API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
+ACCESS_ID = os.getenv("TELEGRAM_ACCESS_ID")
+
 
 async def main():
     bot = Bot(token=API_TOKEN)
