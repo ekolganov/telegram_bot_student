@@ -3,15 +3,14 @@ import logging
 import asyncio
 import os
 
-from handlers import students, themes, dictations, common
-from modules import shared_module
+from handlers import students, themes, dictations, common, ege, share
+
 from middlewares import AccessMiddleware
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
-
-API_TOKEN = "1736892712:AAHDtOBkXm8t8xjgRnCMb8qfT3ZZuAG4QzY"
+API_TOKEN = "1653214808:AAEBtQbr0xuXFcaingH94vjplu-8x_1qVQE"
 ACCESS_ID = [344928892, 1596273768]
 
 # API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
@@ -32,7 +31,8 @@ async def main():
     students.register_handlers_students(dp)
     themes.register_handlers_themes(dp)
     dictations.register_handlers_dictations(dp)
-    shared_module.register_handlers_shared_module(dp)
+    share.register_handlers_share(dp)
+    ege.register_handlers_ege(dp)
 
     await dp.skip_updates()
     await dp.start_polling()

@@ -10,3 +10,8 @@ class NotCorrectMessage(Exception):
 class ExistingEntry(Exception):
     """Ошибка в бота о существующей записи"""
     pass
+
+
+class NotCorrectUpload(Exception):
+    """Ошибка в бота о неудачной загрузке документа"""
+    pass

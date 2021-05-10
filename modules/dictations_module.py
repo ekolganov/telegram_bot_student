@@ -37,14 +37,14 @@ def add_dictation(themes_id: int, dictation: str) -> Dictation:
                      dictation=dictation)
 
 
-def get_dictations_theme(theme_id: int, show_all=0) -> list[Dictations]:
+def get_dictations_theme(theme_id: int, show_all_dictations: bool = False) -> list[Dictations]:
     """ Выводим список диктантов по их темам """
 
     row_dictation = None
-    if show_all == 1:
+    if show_all_dictations:
         row_dictation = db.fetchall("dictations ", ["id", "themes_id", "dictation"],
                                     wanna_return=tuple, order="ORDER BY dictation")
-    elif show_all == 0:
+    elif not show_all_dictations:
         row_dictation = db.fetchall("dictations ", ["id", "themes_id", "dictation"],
                                     wanna_return=tuple,
                                     where=f"where themes_id={theme_id}", order="ORDER BY dictation")

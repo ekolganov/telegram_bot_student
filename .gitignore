@@ -1,3 +1,7 @@
 /venv/
-db/*
+/db/*
 parse.py
+__pycache__
+.idea
+/photos/*
+/documents/*

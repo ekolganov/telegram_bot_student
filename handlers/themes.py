@@ -1,5 +1,6 @@
-import modules.shared_module
-from modules import themes_module, shared_module
+import handlers.share
+import modules.share_module
+from modules import themes_module, share_module
 import exceptions
 
 from aiogram import Dispatcher, types
@@ -30,17 +31,17 @@ async def list_of_themes_dictations(message: types.Message):
                   for th_name, th_id in th.theme_names_ids]
 
         th_row += [f"➡ {grade}\n\n"
-                   f"{modules.shared_module.unpack_list(themes)}"]
+                   f"{modules.share_module.unpack_list(themes)}"]
 
     answer_message = "💬Список тем:\n\n"
     await message.answer(answer_message)
-    await shared_module.pagination_output(message, th_row)
+    await handlers.share.pagination_output(message, th_row)
 
 
 async def del_theme(message: types.Message):
     """ Удаляет одну запись темы по её идентификатору """
 
-    row_id = shared_module.get_id_command(message.text)
+    row_id = share_module.get_id_command(message.text)
 
     themes_module.delete_theme(row_id)
 
@@ -105,7 +106,7 @@ async def add_theme3(message: types.Message, state: FSMContext):
 async def rename_theme1(message: types.Message, state: FSMContext):
     """ Переименование темы, вывод текущей и приглос на ввод новой """
 
-    theme_id = shared_module.get_id_command(message.text)
+    theme_id = share_module.get_id_command(message.text)
 
     await state.update_data(theme_id=theme_id)
 

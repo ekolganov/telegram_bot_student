@@ -1,5 +1,6 @@
+import handlers.share
 from handlers import themes
-from modules import themes_module, dictations_module, shared_module
+from modules import themes_module, dictations_module, share_module
 import exceptions
 
 from aiogram import Dispatcher, types
@@ -32,7 +33,7 @@ async def add_dictation1(message: types.Message, state: FSMContext):
 async def add_dictation2(message: types.Message, state: FSMContext):
     """ Предлагает исправить диктант """
 
-    theme_id = shared_module.get_id_command(message.text)
+    theme_id = share_module.get_id_command(message.text)
     await state.update_data(theme_id=theme_id)
 
     theme = themes_module.get_theme(theme_id)
@@ -64,11 +65,11 @@ async def add_dictation3(message: types.Message, state: FSMContext):
 async def list_dictations(message: types.Message):
     """ Выводит список диктантов для каждой темы """
 
-    theme_id = shared_module.get_id_command(message.text)
+    theme_id = share_module.get_id_command(message.text)
     if theme_id:
         list_dictations_theme = dictations_module.get_dictations_theme(theme_id)
     else:
-        list_dictations_theme = dictations_module.get_dictations_theme(theme_id, show_all=1)
+        list_dictations_theme = dictations_module.get_dictations_theme(theme_id, show_all_dictations=True)
 
     if not list_dictations_theme:
         await message.answer("Нет ни одного диктанта")
@@ -81,17 +82,17 @@ async def list_dictations(message: types.Message):
                       for dictation, d_id in d_th.dicts]
 
         dictations_row += [f"📒 {d_th.theme_name}\n\n"
-                           f"{shared_module.unpack_list(dictations)}"]
+                           f"{share_module.unpack_list(dictations)}"]
 
     answer_message = "💬Список тем и диктантов для них:\n\n"
     await message.answer(answer_message)
-    await shared_module.pagination_output(message, dictations_row)
+    await handlers.share.pagination_output(message, dictations_row)
 
 
 async def get_dict_full(message: types.Message):
     """ Возвращает голый текст диктанта """
 
-    dict_id = shared_module.get_id_command(message.text)
+    dict_id = share_module.get_id_command(message.text)
 
     dictation = dictations_module.get_dict(dict_id)
     theme_name = themes_module.get_theme(dictation.themes_id)
@@ -104,8 +105,7 @@ async def get_dict_full(message: types.Message):
 async def del_dict(message: types.Message):
     """ Удаляет диктант """
 
-    dict_id = shared_module.get_id_command(message.text)
-
+    dict_id = share_module.get_id_command(message.text)
     dictations_module.del_dict(dict_id)
     await message.answer("Удалил")
 
@@ -115,7 +115,7 @@ async def rewrite_dict1(message: types.Message, state: FSMContext):
 
     await state.finish()
 
-    dict_id = shared_module.get_id_command(message.text)
+    dict_id = share_module.get_id_command(message.text)
     await state.update_data(dict_id=f"{dict_id}")
 
     dictation_old = dictations_module.get_dict(dict_id)

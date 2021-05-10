@@ -7,6 +7,21 @@ conn = sqlite3.connect(os.path.join("db", "students.db"))
 cursor = conn.cursor()
 
 
+def convert_to_blob_data(path_filename: str) -> bytes:
+    """ Преобразование файла в двоичный формат """
+
+    with open(path_filename, 'rb') as f:
+        blob_data = f.read()
+    return blob_data
+
+
+def convert_from_blob_data(blob_data: bytes, path_filename) -> None:
+    """ Преобразование двоичных данных в файл """
+
+    with open(path_filename, 'wb') as f:
+        f.write(blob_data)
+
+
 def insert(table: str, column_values: Dict) -> None:
     """ Вставляет записи """
 
@@ -21,15 +36,17 @@ def insert(table: str, column_values: Dict) -> None:
     conn.commit()
 
 
-def fetchall(table: str, columns: List[str], wanna_return: tuple or dict, join_on="", where="", order="") -> List[Tuple or Dict]:
+def fetchall(table: str, columns: List[str], wanna_return: tuple or dict,
+             join_on="", where="", order="") -> List[Tuple or Dict]:
     """
-    Получает список кортежей или словарь, в зависимости от переменной wanna_return.
+    Получает из таблицы список кортежей или словарь, в зависимости от переменной wanna_return.
     Для извлечения нескольких значений
     Можно указать join_on, where, order по расположению в f-строке.
     """
 
     columns_joined = ", ".join(columns)
     cursor.execute(f"SELECT {columns_joined} FROM {table} {where} {join_on} {order}")
+
     rows = cursor.fetchall()
     result = []
     if wanna_return == dict:
@@ -67,6 +84,14 @@ def delete(table: str, row_id: int) -> None:
 
     row_id = int(row_id)
     cursor.execute(f"delete from {table} where id={row_id}")
+    conn.commit()
+
+
+def delete_custom(table: str, where_param: str, row_id: int) -> None:
+    """ Удаляет строку с указанием where"""
+
+    row_id = int(row_id)
+    cursor.execute(f"delete from {table} where {where_param}={row_id}")
     conn.commit()
 
 

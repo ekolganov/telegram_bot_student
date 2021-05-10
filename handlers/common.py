@@ -3,7 +3,7 @@ import logging
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ResponseParameters
 
 
 async def cancel_handler(message: types.Message, state: FSMContext):
@@ -34,6 +34,9 @@ async def send_welcome(message: types.Message, state: FSMContext):
         "\nДействия с диктантами\n",
         "Просмотреть все диктанты: /dictations",
         "Добавить диктант: /add_dictation",
+        "\nЕГЭ\n",
+        "Список заданий и материалов к ЕГЭ: /ege_tasks_list",
+        "Добавить задание ЕГЭ: /add_ege_task",
     ]
 
     button_help = KeyboardButton('/help')

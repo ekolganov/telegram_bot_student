@@ -1,5 +1,5 @@
-import modules.shared_module
-from modules import students_module, shared_module
+import modules.share_module
+from modules import students_module, share_module
 import exceptions
 
 from aiogram import Dispatcher, types
@@ -21,7 +21,7 @@ async def list_of_students(message: types.Message):
 
     list_students_rows = [
         f"➡ {student.fullname} | {student.grade} | {student.description}\n"
-        f"удалить {student.fullname} ❌ /del_student{student.id}"
+        f"❌ /del_student{student.id}"
         for student in list_students]
 
     answer_message = "💬Список учеников:\n\n" + "\n\n".join(list_students_rows)
@@ -42,7 +42,7 @@ async def list_of_students_and_themes(message: types.Message):
         themes = [f"▪ {th}" for th in st_th.theme_name]
 
         st_th_row += [f"➡ {name}\n"
-                      f"{modules.shared_module.unpack_list(themes)}"]
+                      f"{modules.share_module.unpack_list(themes)}"]
 
     answer_message = "💬Список учеников и тем для его класса:\n\n" + "\n\n".join(st_th_row)
 
@@ -52,7 +52,7 @@ async def list_of_students_and_themes(message: types.Message):
 async def del_student(message: types.Message):
     """ Удаляет одну запись студента по её идентификатору """
 
-    row_id = shared_module.get_id_command(message.text)
+    row_id = share_module.get_id_command(message.text)
     students_module.delete_student(row_id)
 
     answer_message = "Удалил"
