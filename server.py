@@ -20,7 +20,7 @@ async def main():
     dp.middleware.setup(AccessMiddleware(ACCESS_ID))
 
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
 
