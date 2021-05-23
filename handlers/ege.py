@@ -65,7 +65,8 @@ async def upload_content1(message: types.Message, state: FSMContext):
     task_id = share_module.get_id_command(message.text)
     await state.update_data(task_id=task_id)
 
-    await message.answer("Вставьте или перешлите мне одну фотографию или документ")
+    await message.answer("Вставьте или перешлите мне одну фотографию или документ\n"
+                         "Убедитесь, что название файла не содержит точек, кроме той, что обозначает расширение")
     await Form.wait_content_upload.set()
 
 
