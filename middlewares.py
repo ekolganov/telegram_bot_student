@@ -5,7 +5,7 @@ from aiogram.dispatcher.middlewares import BaseMiddleware
 
 
 class AccessMiddleware(BaseMiddleware):
-    def __init__(self, access_id: list):
+    def __init__(self, access_id: set):
         self.access_id = access_id
         super().__init__()
 

@@ -1,5 +1,4 @@
 """Кастомные исключения, генерируемые приложением"""
-import logging
 
 
 class NotCorrectMessage(Exception):

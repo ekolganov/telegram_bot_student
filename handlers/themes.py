@@ -27,7 +27,8 @@ async def list_of_themes_dictations(message: types.Message):
         grade = th.themes_grade_number
         themes = [f"📒 {th_name}\n"
                   f"✏/rename_theme{th_id}  ❌/del_theme{th_id}\n"
-                  f"диктанты: 📓/dictations{th_id}\nдобавить диктант: 📓/add_dictation{th_id}\n"
+                  f"диктанты: 📓/dictations{th_id}\n"
+                  f"добавить диктант: 📓/add_dictation{th_id}\n"
                   for th_name, th_id in th.theme_names_ids]
 
         th_row += [f"➡ {grade}\n\n"
@@ -39,7 +40,7 @@ async def list_of_themes_dictations(message: types.Message):
 
 
 async def del_theme(message: types.Message):
-    """ Удаляет одну запись темы по её идентификатору """
+    """ Удаляет одну тему и связанные с ней диктанты по её идентификатору """
 
     row_id = share_module.get_id_command(message.text)
 

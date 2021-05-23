@@ -45,7 +45,7 @@ async def get_list_ege_tasks(message: types.Message):
                        f"❌/del_ege_content{ege_content.id}\n"
                        for ege_content in list_ege_content_lite]
 
-        ege_tasks_row += [f"📔 {ege_task.task}   ✏/rewrite_ege_task{ege_task.id} ❌/del_ege_task{ege_task.id}\n"
+        ege_tasks_row += [f"📔 {ege_task.task}  ✏/rewrite_ege_task{ege_task.id} ❌/del_ege_task{ege_task.id}\n"
                           f"▪ {ege_task.task_name}\n"
                           f"✏/rewrite_ege_name_task{ege_task.id}\n\n"
                           f"Добавить материалы /add_ege_content{ege_task.id}\n\n"

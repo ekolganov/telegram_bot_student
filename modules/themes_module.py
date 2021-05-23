@@ -40,9 +40,10 @@ def get_themes() -> list[Themes]:
 
 
 def delete_theme(row_id: int) -> None:
-    """ Удаляет студента по его идентификатору """
+    """ Удаляет тему по его идентификатору и соответствующие этой теме диктанты"""
 
     db.delete("themes", row_id)
+    db.delete_custom("dictations", where_param="themes_id", row_id=row_id)
 
 
 def add_theme(theme_grade: str, theme_name: str) -> Theme:

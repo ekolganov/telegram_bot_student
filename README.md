@@ -31,7 +31,7 @@ docker build -t tg_bot ./
 
 Запускаем контейнер и мапим внутрь контейнера папку из хост машины для сохранения данных вне зависимости от контейнера:
 ```
-docker run -d --name tg_bot_cont -v /local_project_path/db:/home/db tg_bot
+docker run -d --name tg_bot_cont -v /full_project_path/db:/home/db tg_bot
 ```
 
 Чтобы войти в работающий контейнер:
@@ -77,7 +77,7 @@ sqlite3 /home/db/students.db
 |   createdb.sql                    # скрипт создания и наполенения таблицы
 |   db.py                           # команды для взаимодействия с БД
 |   Dockerfile
-|   exceptions.py
+|   exceptions.py                   # кастомные исключения
 |   middlewares.py                  # ограничения доступа
 |   pip_requirements.txt            # зависимости
 |   README.md

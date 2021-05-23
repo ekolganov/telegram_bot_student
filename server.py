@@ -12,13 +12,13 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
 ACCESS_IDS = os.getenv("TELEGRAM_ACCESS_ID")
-ACCESS_IDS_LIST = [int(access_id) for access_id in ACCESS_IDS.split(',')]
+ACCESS_IDS_SET = set(int(access_id) for access_id in ACCESS_IDS.split(','))
 
 
 async def main():
     bot = Bot(token=API_TOKEN)
     dp = Dispatcher(bot, storage=MemoryStorage())
-    dp.middleware.setup(AccessMiddleware(ACCESS_IDS_LIST))
+    dp.middleware.setup(AccessMiddleware(ACCESS_IDS_SET))
 
     logging.basicConfig(
         level=logging.INFO,

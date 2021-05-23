@@ -1,3 +1,4 @@
+import handlers.share
 import modules.share_module
 from modules import students_module, share_module
 import exceptions
@@ -44,9 +45,10 @@ async def list_of_students_and_themes(message: types.Message):
         st_th_row += [f"➡ {name}\n"
                       f"{modules.share_module.unpack_list(themes)}"]
 
-    answer_message = "💬Список учеников и тем для его класса:\n\n" + "\n\n".join(st_th_row)
+    answer_message = "💬Список учеников и тем для его класса:\n\n"
 
     await message.answer(answer_message)
+    await handlers.share.pagination_output(message, st_th_row)
 
 
 async def del_student(message: types.Message):
